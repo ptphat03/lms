@@ -15,3 +15,4 @@ pandas
 openpyxl
 psycopg2
 google-generativeai
+django-ckeditor
