@@ -15,10 +15,9 @@ def user_summary(request):
     certificates = Certificate.objects.filter(user=user.id)
     ai_insights = AIInsights.objects.filter(user=user.id)
     analytics = PerformanceAnalytics.objects.filter(user=user.id)
-    paginator = Paginator(certificates, 2) 
-
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    paginator_cer = Paginator(certificates, 6) 
+    page_number_cer = request.GET.get('page')
+    page_obj_cer = paginator_cer.get_page(page_number_cer)
 
 
     module_groups = ModuleGroup.objects.all()
@@ -39,7 +38,7 @@ def user_summary(request):
         list.append(dict_)
 
     context = {
-        'page_obj': page_obj,
+        'page_obj_cer': page_obj_cer,
         'certificates':certificates,
         'ai_insights':ai_insights,
         'analytics':analytics,

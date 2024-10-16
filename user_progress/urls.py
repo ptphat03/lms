@@ -1,8 +1,8 @@
 from django.urls import path
-from . import views
+from user_summary import views
 
 app_name = 'user_progress'
 
 urlpatterns = [
-    path('',views.progress_list, name='progress_list')
+    path('',views.user_summary, name='progress_list')
 ]
