@@ -10,10 +10,12 @@ def book_search_view(request):
     books = []
     total_items = 0
 
+    # Initialize page_number
+    page_number = request.GET.get('page', 1)  # Default to page 1 if not provided
+
     if query:
         if book_type == 'free':
             api_url = f"https://www.googleapis.com/books/v1/volumes?q={query}&filter=free-ebooks&maxResults=40&key=AIzaSyBxsqMKP8XrSsdzAX0Kx-uJzHZ8lIredT4"
-
         else:
             api_url = f"https://www.googleapis.com/books/v1/volumes?q={query}&maxResults=40&key=AIzaSyCpskMxoV94c32BqyhGce6JJLuHQ4bZjJg"
 
@@ -38,8 +40,9 @@ def book_search_view(request):
                         'publishedDate': volume_info.get('publishedDate', 'Unknown date'),
                     }
                     books.append(book)
+
+        # Create a new paginator for the full list of books
         paginator = Paginator(books, books_per_page)  
-        page_number = request.GET.get('page')
         paginated_books = paginator.get_page(page_number)  
 
         # Fetch more results from the API if there are more pages
@@ -66,8 +69,10 @@ def book_search_view(request):
                             }
                             books.append(book)
 
-    paginator = Paginator(books, books_per_page) 
-    paginated_books = paginator.get_page(page_number)  # Get the current page
+    else:
+        # If no query, return an empty paginated list
+        paginator = Paginator([], books_per_page)
+        paginated_books = paginator.get_page(page_number)
 
     return render(request, 'book_search.html', {
         'books': paginated_books,  # Pass the paginated books to the template
