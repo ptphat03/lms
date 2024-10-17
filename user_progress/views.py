@@ -1,3 +1,8 @@
+from django.shortcuts import render, redirect
+from certificate.models import Certificate
+from django.core.paginator import Paginator
+from ai_insights.models import AIInsights
+from performance_analytics.models import PerformanceAnalytics
 from django.shortcuts import render
 from module_group.models import ModuleGroup, Module
 from course.models import Course, Enrollment
@@ -5,7 +10,6 @@ from quiz.models import Quiz, StudentQuizAttempt
 from user.models import User
 from collections import Counter
 
-# Create your views here.
 def calculate(user_id, course_id):
     quizzes = Quiz.objects.filter(course=course_id).count()
     attempts = len(Counter(set(
@@ -13,8 +17,11 @@ def calculate(user_id, course_id):
         )))
     return quizzes, attempts
 
-def progress_list(request):
-    # print(request.user.name)
+
+
+def user_progress_summary(request):
+    user = request.user  
+
     module_groups = ModuleGroup.objects.all()
     modules = Module.objects.all()
     course = Enrollment.objects.filter(student=request.user)
@@ -31,8 +38,13 @@ def progress_list(request):
             dict_['courses'] = i
             dict_['Percent'] = attempts / total * 100
         list.append(dict_)
-    return render(request,'aggregated.html',{'module_groups': module_groups,
-                                             'modules': modules,
-                                             'courses': list,
-                                             'course_count':len(list),
-                                             'user': request.user })
+    context = {
+        'module_groups': module_groups,
+        'modules': modules,
+        'courses': list,
+        'course_count':len(list),
+        'user': request.user,
+        'show': 'progress',
+    }
+    return render(request, 'user_progress_summary.html', context)
+

@@ -1,10 +1,9 @@
 from django.urls import path,include
-from django.urls import path
-from user_summary import views
-app_name = 'performance_analytics'
+from .views import *
 
+app_name = 'performance_analytics'
 urlpatterns = [
-    path('',views.user_summary, name='performance_list')
+    path('summary/',view=performance_analytics_summary,name='performance_analytics_summary')
     
     
 ]
