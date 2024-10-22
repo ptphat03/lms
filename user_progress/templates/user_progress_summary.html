@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "user_summary.html" %}
 
 
 {% block title %}Certificate{% endblock %}
@@ -13,7 +13,7 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 20px;
+            padding: 0px;
             background-color: #f0f0f0;
         }
         .container {
@@ -201,15 +201,7 @@
 </head>
 <body>
     <div class="container">
-        <a href="">
-            <h1>{{ user.username }}</h1>
-        </a>
-        <div class="tabs">
-            <a href="{% url 'user_progress:user_progress_summary' %}"><button class="tab active" onclick="openTab(event, 'progress')">User Progress</button></a>
-            <a href="{% url 'performance_analytics:performance_analytics_summary' %}"><button class="tab" onclick="openTab(event, 'performance')">Performance</button></a>
-            <a href="{% url 'ai_insights:ai_insights_summary' %}"><button class="tab" onclick="openTab(event, 'insights')">AI Insights</button></a>
-            <a href="{% url 'certificate:certificate_summary' %}"><button class="tab" onclick="openTab(event, 'certificates')">Certificates</button></a>
-        </div>
+        {{block.super}}
 
         <div id="progress" class="tab-content active">
             <div class="card">

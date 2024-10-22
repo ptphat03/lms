@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "user_summary.html" %}
 
 
 {% block title %}Certificate{% endblock %}
@@ -124,20 +124,7 @@
 </head>
 <body>
     <div class="container">
-        <a href="">
-            <h1>{{ user.username }}</h1>
-        </a>
-        <div class="tabs">
-            <a href="{% url 'user_progress:user_progress_summary' %}"><button class="tab" onclick="openTab(event, 'progress')">User Progress</button></a>
-            <a href="{% url 'performance_analytics:performance_analytics_summary' %}"><button class="tab" onclick="openTab(event, 'performance')">Performance</button></a>
-            <a href="{% url 'ai_insights:ai_insights_summary' %}"><button class="tab" onclick="openTab(event, 'insights')">AI Insights</button></a>
-            <a href="{% url 'certificate:certificate_summary' %}"><button class="tab active" onclick="openTab(event, 'certificates')">Certificates</button></a>
-        </div>
-
-        <div id="progress" class="tab-content"></div>
-        <div id="performance" class="tab-content"></div>
-        <div id="insights" class="tab-content"></div>
-
+        {{block.super}}
         <div id="certificates" class="tab-content active">
             <div class="grid">
             {% for certificate in page_obj %}
@@ -151,25 +138,26 @@
                     </div> 
                 </div>
             {% endfor %}
-                
-                <div class="pagination">
-                    <span class="step-links">
-                        {% if page_obj.has_previous %}
-                            <a href="?page=1">&laquo; First</a>
-                            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                        {% endif %}
-
-                        <span class="current">
-                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                        </span>
-
-                        {% if page_obj.has_next %}
-                            <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-                        {% endif %}
-                    </span>
-                </div>
             </div>
+                
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+            
         </div>
     </div>
 
