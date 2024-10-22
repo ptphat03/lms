@@ -117,27 +117,27 @@
             background-color: #4CAF50;
             color: white;
             border-radius: 4px;
-        }
-       
-    
+        }    
     </style>
 </head>
 <body>
     <div class="container">
-        {{block.super}}
+        {{ block.super }}
         <div id="certificates" class="tab-content active">
+            {% if page_obj %}
             <div class="grid">
-            {% for certificate in page_obj %}
-                <div class="card">
-                    <a href="{% url 'course:course_detail' certificate.course.id %}">  
-                        <h3>{{ certificate.course }}</h3>
-                    </a>
-                    <p><strong>Issue Date:</strong> {{ certificate.issue_date }}</p>
-                    <div style="text-align: right;">
-                        <a href="{% url 'certificate:certificate_pdf' certificate.id %}" class="btn btn-sm" style="font-size: 1em;">View</a>
-                    </div> 
-                </div>
-            {% endfor %}
+                {% for certificate in page_obj %}
+                    <div class="card">
+                        <a href="{% url 'course:course_detail' certificate.course.id %}" style="text-decoration: none;">  
+                            <h3>{{ certificate.course }}</h3>
+                        </a>
+                        
+                        <p><strong>Issue Date:</strong> {{ certificate.issue_date }}</p>
+                        <div style="text-align: right;">
+                            <a href="{% url 'certificate:certificate_pdf' certificate.id %}" class="btn btn-sm" style="font-size: 1em;">View</a>
+                        </div> 
+                    </div>
+                {% endfor %}
             </div>
                 
             <div class="pagination">
@@ -146,20 +146,23 @@
                         <a href="?page=1">&laquo; First</a>
                         <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
                     {% endif %}
-
+    
                     <span class="current">
                         Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
                     </span>
-
+    
                     {% if page_obj.has_next %}
                         <a href="?page={{ page_obj.next_page_number }}">Next</a>
                         <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
                     {% endif %}
                 </span>
             </div>
-            
+            {% else %}
+                <center> <p>No certificates found.</p> </center>
+            {% endif %}
         </div>
     </div>
+    
 
 </body>
 {% endblock %}
