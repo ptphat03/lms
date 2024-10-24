@@ -6,7 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     
     <style>
         body {
@@ -155,6 +156,7 @@
     <div class="container">
         {{ block.super}}
         <div id="insights" class="tab-content active">
+            {% if page_ai_insights %}
             <div class="container mt-3">
                 
                 <form method="post" enctype="multipart/form-data">  <!-- Added enctype for file uploads -->
@@ -175,57 +177,60 @@
                 </form>
                 
             </div>
+            <div class="container mt-3 grid" style="margin-top: 10px; padding-bottom: 20px;">
+                {% for ai_insight in page_ai_insights %}
+                    <div class="card">
+                        <h3>{{ ai_insight.course }}</h3>
+                        <ul>
+                            {% if ai_insight.insight_type == 'Warning' %}
+                            <li>Insight Type: <span class="badge-warning">{{ ai_insight.insight_type }}</span></li>
+                            {% elif ai_insight.insight_type == 'Compliment' %}
+                            <li>Insight Type: <span class="badge-comliment">{{ ai_insight.insight_type }}</span></li>
+                            {% elif ai_insight.insight_type == 'Info' %}
+                            <li>Insight Type: <span class="badge-info">{{ ai_insight.insight_type }}</span></li>
+                            {% else %}
+                            <li>Insight Type: <span class="badge-undefined">{{ ai_insight.insight_type }}</span></li>
+                            {% endif %}
+                            <li>Insight Text: {{ ai_insight.insight_text }}</li>
+                            <li>Created At: {{ ai_insight.created_at }}</li>
+                        </ul>
+                        <a href="{% url 'course:course_detail' ai_insight.course.id %}" class="btn btn-primary">Go to course {{ ai_insight.course }}</a>
+                    </div>
+                {% endfor %}
+                </div>
+                <div class="pagination">
+                    <span class="step-links">
+                        <a href="?page=1">&laquo; First</a>
+                        {% if page_ai_insights.has_previous %}
+                            <a href="?page={{ page_ai_insights.previous_page_number }}">Previous</a>
+                        {% endif %}
+    
+                        <span class="current">
+                            Page {{ page_ai_insights.number }} of {{ page_ai_insights.paginator.num_pages }}.
+                        </span>
+    
+                        {% if page_ai_insights.has_next %}
+                            <a href="?page={{ page_ai_insights.next_page_number }}">Next</a>
+                        {% endif %}
+                        <a href="?page={{ page_ai_insights.paginator.num_pages }}">Last &raquo;</a>
+                    </span>
+                </div>
             <div class="container mt-3" style="padding-bottom: 10px;">
                 <h5>Overall Chart and Information</h5>
             <div class="grid-chart">
                 <div class="card">
-                    <canvas id="myChart" width="400" height="100"></canvas>
+                    <canvas id="myChart" width="400" height="100" style="max-height: 30vh;"></canvas>
                 </div>
                 <div class="card">
                     <span>hello</span>
                 </div>
             </div>
         </div>
-            
-            
-            <div class="container mt-3 grid" style="margin-top: 10px; padding-bottom: 20px;">
-            {% for ai_insight in page_ai_insights %}
-                <div class="card">
-                    <h3>{{ ai_insight.course }}</h3>
-                    <ul>
-                        {% if ai_insight.insight_type == 'Warning' %}
-                        <li>Insight Type: <span class="badge-warning">{{ ai_insight.insight_type }}</span></li>
-                        {% elif ai_insight.insight_type == 'Compliment' %}
-                        <li>Insight Type: <span class="badge-comliment">{{ ai_insight.insight_type }}</span></li>
-                        {% elif ai_insight.insight_type == 'Info' %}
-                        <li>Insight Type: <span class="badge-info">{{ ai_insight.insight_type }}</span></li>
-                        {% else %}
-                        <li>Insight Type: <span class="badge-undefined">{{ ai_insight.insight_type }}</span></li>
-                        {% endif %}
-                        <li>Insight Text: {{ ai_insight.insight_text }}</li>
-                        <li>Created At: {{ ai_insight.created_at }}</li>
-                    </ul>
-                    <a href="{% url 'course:course_detail' ai_insight.course.id %}" class="btn btn-primary">Go to course {{ ai_insight.course }}</a>
-                </div>
-            {% endfor %}
-            </div>
-            <div class="pagination">
-                <span class="step-links">
-                    <a href="?page=1">&laquo; First</a>
-                    {% if page_ai_insights.has_previous %}
-                        <a href="?page={{ page_ai_insights.previous_page_number }}">Previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ page_ai_insights.number }} of {{ page_ai_insights.paginator.num_pages }}.
-                    </span>
-
-                    {% if page_ai_insights.has_next %}
-                        <a href="?page={{ page_ai_insights.next_page_number }}">Next</a>
-                    {% endif %}
-                    <a href="?page={{ page_ai_insights.paginator.num_pages }}">Last &raquo;</a>
-                </span>
-            </div>
+        {% else %}
+        <div class="container mt-3">
+            <center>There is none of your insights to show here. If you think there is an error, contact: ...</center>
+        </div>
+            {% endif %}
         </div>
     </div>
 
@@ -233,43 +238,54 @@
     </div>
 </body>
 <script>
-    var ctx = document.getElementById('myChart').getContext('2d');
+    const data1 = {
+            labels: {{ labels|safe }},
+            datasets: [{
+                data: {{ data|safe }},
+                backgroundColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
+                borderColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
+                hoverOffset: 4
+            }]
+        };
 
-    var chartData = {
-        labels: {{ labels|safe }},
-        datasets: [{
-            data: {{ data|safe }},
-            backgroundColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
-            borderColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
-            borderWidth: 1
-        }]
-    };
-
-    var chartOptions = {
-        title: {
-            display: true,
-            text: '{{ chart_name }}'
-        },
-        legend: {
-            position: 'right', // Change to 'top', 'left', 'right' as needed
-            labels: {
-                generateLabels: function(chart) {
-                    return chart.data.labels.map(function(label, index) {
-                        return {
-                            text: label,
-                            fillStyle: chart.data.datasets[0].backgroundColor[index]
-                        };
-                    });
+        const config1 = {
+            type: 'pie',
+            data: data1,
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '{{ chart_name }}'
+                    },
+                    legend: {
+                        position: 'right'
+                    },
+                    datalabels: {
+                        formatter: (value, context) => {
+                            // let percentage = (value / context.chart._metasets
+                            // [context.datasetIndex].total * 100)
+                            //     .toFixed(2) + '%';
+                            if (value > 0) {
+                                return value
+                            } else {
+                                return ''
+                            }
+                        },
+                        color: '#fff',
+                        font: {
+                            size: 14,
+                        },
+                    }
                 }
-            }
-        }
-    };
+            },
+            plugins: [ChartDataLabels]
+        };
 
-    var myChart = new Chart(ctx, {
-        type: 'pie',
-        data: chartData,
-        options: chartOptions
-    });
+        const pieChart1 = new Chart(
+            document.getElementById('myChart'),
+            config1
+        );
     // Function to store the active tab in localStorage
     function setTab(tabName) {
         localStorage.setItem('activeTab', tabName);
