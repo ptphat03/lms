@@ -1,6 +1,6 @@
 {% extends 'user_summary.html' %}
 
-{% block title %}Feedback List{% endblock %}
+{% block title %}User Progress{% endblock %}
 
 {% block content %}
 
@@ -72,12 +72,12 @@
     /* New styles for progress bar */
     .progress-container {
         width: 100%;
-        background-color: #4CAF50;
+        background-color: #e0e0e0;
         border-radius: 5px;
         margin: 10px 0;
         height: 25px;
     }
-    .progress-bar {
+    .progress-bar-progress {
         height: 100%;
         background-color: #4CAF50;
         width: 0%; /* Initial width; will be set dynamically */
@@ -196,6 +196,7 @@
     
 
 </style>
+
 <body>
     <div class="container">
        {{block.super}}
@@ -209,7 +210,7 @@
                 <p><strong>Completed Courses:</strong> {{completed}}</p>
                 {% if not percent_complete == 0 %}
                 <div class="progress-container">
-                    <div class="progress-bar" style="width: {{percent_complete}}%;"> {{percent_complete}}% </div> <!-- Set the width dynamically -->
+                    <div class="progress-bar-progress" style="width: {{percent_complete}}%"> <center>{{percent_complete}}%</center> </div> <!-- Set the width dynamically -->
                 </div>
                 {% else %}
                 <div class="progress-container">
@@ -230,7 +231,7 @@
                                 <p class="course-title" style="padding-right: 10px;">{{course.course.name}}</p>
                                 {% if not course.progress_percentage == 0 %}
                                 <div class="progress-container" style="width: 90vh;">
-                                    <div class="progress-bar" style="width: {{course.progress_percentage}}%"> {{course.progress_percentage}}% </div>
+                                    <div class="progress-bar-progress" style="width: {{course.progress_percentage}}%"> <center>{{course.progress_percentage}}%</center> </div>
                                 </div>
                                 {% else %}
                                 <div class="progress-container" style="width: 90vh;">
