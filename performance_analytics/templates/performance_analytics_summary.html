@@ -4,11 +4,9 @@
 {% block title %}Certificate{% endblock %}
 
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     
-    <style>
+<style>
         /* Existing styles remain unchanged */
         body {
             font-family: Arial, sans-serif;
@@ -76,12 +74,12 @@
         /* New styles for progress bar */
         .progress-container {
             width: 100%;
-            background-color: #4CAF50;
+            background-color: #e0e0e0;
             border-radius: 5px;
             margin: 10px 0;
             height: 25px;
         }
-        .progress-bar {
+        .progress-bar-performance {
             height: 100%;
             background-color: #4CAF50;
             width: 0%; /* Initial width; will be set dynamically */
@@ -159,14 +157,11 @@
         }
         
     
-    </style>
-</head>
+</style>
 <body>
     <div class="container">
         {{ block.super}}
-        <div id="progress" class="tab-content"></div>
-        <div id="performance" class="tab-content"></div>
-        <div id="insights" class="tab-content"></div>
+        
 
         <div id="performance" class="tab-content active">
             {% if page_obj %}
@@ -176,7 +171,7 @@
                         <h2>{{ data.course }}</h2>
                         <p><strong>Completion Rate:</strong> {{ data.completion_rate }}%</p>
                         <div class="progress-container">
-                            <div class="progress-bar" style="width: {{ data.completion_rate }}%;"></div> <!-- Set the width dynamically -->
+                            <div class="progress-bar-performance" style="width: {{ data.completion_rate }}%"> <center>{{ data.completion_rate }}%</center></div> <!-- Set the width dynamically -->
                         </div>
                         <p><strong>Average Score:</strong> {{ data.average_score }}</p>
                     </div>
