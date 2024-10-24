@@ -1,14 +1,13 @@
-{% extends "base.html" %}
+{% extends "user_summary.html" %}
 {% load form_filters %}
 
-{% block title %}AI Insights Summary{% endblock %}
 
 {% block content %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -110,14 +109,7 @@
         }
         .grid-chart {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 15px;
-            position: relative;
-            padding-bottom: 20px; /* Adds space for the paginator */
-        }
-        .grid-chart-empty {
-            display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 15px;
             position: relative;
             padding-bottom: 20px; /* Adds space for the paginator */
@@ -161,19 +153,8 @@
 </head>
 <body>
     <div class="container">
-
-        <div class="tabs">
-            <a href="{% url 'user_progress:user_progress_summary' %}"><button class="tab" onclick="openTab(event, 'progress')">User Progress</button></a>
-            <a href="{% url 'performance_analytics:performance_analytics_summary' %}"><button class="tab" onclick="openTab(event, 'performance')">Performance</button></a>
-            <a href="{% url 'ai_insights:ai_insights_summary' %}"><button class="tab active" onclick="openTab(event, 'insights')">AI Insights</button></a>
-            <a href="{% url 'certificate:certificate_summary' %}"><button class="tab" onclick="openTab(event, 'certificates')">Certificates</button></a>
-        </div>
-
-        <div id="progress" class="tab-content"></div>
-        <div id="performance" class="tab-content"></div>
-
+        {{ block.super}}
         <div id="insights" class="tab-content active">
-            {% if page_ai_insights %}
             <div class="container mt-3">
                 
                 <form method="post" enctype="multipart/form-data">  <!-- Added enctype for file uploads -->
@@ -194,8 +175,20 @@
                 </form>
                 
             </div>
+            <div class="container mt-3" style="padding-bottom: 10px;">
+                <h5>Overall Chart and Information</h5>
+            <div class="grid-chart">
+                <div class="card">
+                    <canvas id="myChart" width="400" height="100"></canvas>
+                </div>
+                <div class="card">
+                    <span>hello</span>
+                </div>
+            </div>
+        </div>
             
-            <div id="insights-list" class="container mt-3 grid" style="margin-top: 10px; padding-bottom: 20px;">
+            
+            <div class="container mt-3 grid" style="margin-top: 10px; padding-bottom: 20px;">
             {% for ai_insight in page_ai_insights %}
                 <div class="card">
                     <h3>{{ ai_insight.course }}</h3>
@@ -233,23 +226,6 @@
                     <a href="?page={{ page_ai_insights.paginator.num_pages }}">Last &raquo;</a>
                 </span>
             </div>
-            <div class="container mt-3" style="padding-bottom: 10px;">
-                <h5>Overall Chart and Information</h5>            
-            <div class="grid-chart">
-                <div class="card">                   
-                    <canvas id="myChart" width="400" height="100" style="max-height: 30vh;"></canvas>
-                </div>
-                <div class="card">
-                    <span>hello</span>
-                </div>
-            </div>
-        
-        </div>
-        {% else %}
-        <div class="container mt-3">
-            <center>There is none of your insights to show here. If you think there is an error, contact: ...</center>
-        </div>
-        {% endif %}
         </div>
     </div>
 
@@ -257,177 +233,70 @@
     </div>
 </body>
 <script>
-    // ---VER 2---
-    // document.addEventListener
-    //         ("DOMContentLoaded", function () {
-    //             var ctx = document.getElementById
-    //                 ('myChart').getContext('2d');
-    //             var myChart = new Chart(ctx, {
-    //                 type: 'pie',
-    //                 data: {
-    //                     labels:
-    //                         ['Red', 'Blue', 'Yellow',
-    //                             'Green', 'Purple', 'Orange'],
-    //                     datasets: [{
-    //                         data: [12, 19, 3, 5, 2, 3],
-    //                         backgroundColor: [
-    //                             'red',
-    //                             'blue',
-    //                             'yellow',
-    //                             'green',
-    //                             'purple',
-    //                             'orange'
-    //                         ],
-    //                         borderWidth: 1
-    //                     }]
-    //                 },
-    //                 options: {
-    //                     title: {
-    //                         display: true,
-    //                         text: 'My Custom Pie Chart' // Set the desired title here
-    //                     },
-    //                     plugins: {
-    //                         legend: {
-    //                             display: true,
-    //                             position: 'right',
-    //                             labels: {
-    //                                 generateLabels: function (chart) {
-    //                                     return chart.data.labels.
-    //                                         map(function (label, i) {
-    //                                             let backgroundColor = chart.data.
-    //                                                 datasets[0].backgroundColor[i];
-    //                                             return {
-    //                                                 text: label + ': ' + chart.data.
-    //                                                     datasets[0].data[i],
-    //                                                 fillStyle: backgroundColor
-    //                                             };
-    //                                         });
-    //                                 }
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             });
-    //         });
+    var ctx = document.getElementById('myChart').getContext('2d');
 
-    // ---VER 1---
-    // var ctx = document.getElementById('myChart').getContext('2d');
+    var chartData = {
+        labels: {{ labels|safe }},
+        datasets: [{
+            data: {{ data|safe }},
+            backgroundColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
+            borderColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
+            borderWidth: 1
+        }]
+    };
 
-    // var chartData = {
-    //     labels: {{ labels|safe }},
-    //     datasets: [{
-    //         data: {{ data|safe }},
-    //         backgroundColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
-    //         borderColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
-    //         borderWidth: 1
-    //     }]
-    // };
-
-    // var chartOptions = {
-    //     title: {
-    //         display: true,
-    //         text: '{{ chart_name }}'
-    //     },
-    //     plugins: {
-    //         legend: {
-    //             position = 'right',
-    //             display: true,
-    //             labels: {
-    //                 generateLabels: function (chart) {
-    //                     return chart.data.labels.
-    //                         map(function (label, i) {
-    //                             let backgroundColor = chart.data.
-    //                                 datasets[0].backgroundColor[i];
-    //                             return {
-    //                                 text: label + ': ' + chart.data.
-    //                                     datasets[0].data[i],
-    //                                 fillStyle: backgroundColor
-    //                             };
-    //                         });
-    //                 }
-    //             }
-    //         }
-    //     }
-    // };
-
-    // var myChart = new Chart(ctx, {
-    //     type: 'pie',
-    //     data: chartData,
-    //     options: chartOptions
-    // });
-    
-    // ---VER 3---
-    const data1 = {
-            labels: {{ labels|safe }},
-            datasets: [{
-                data: {{ data|safe }},
-                backgroundColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
-                borderColor: ['#ff2c2c', '#00b627', '#2196F3', '#535353'],
-                hoverOffset: 4
-            }]
-        };
-
-        const config1 = {
-            type: 'pie',
-            data: data1,
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: '{{ chart_name }}'
-                    },
-                    legend: {
-                        position: 'right',
-                    //     labels: {
-                    //         generateLabels: function (chart) {
-                    //             return chart.data.labels.
-                    //                 map(function (label, i) {
-                    //                     let backgroundColor = chart.data.
-                    //                         datasets[0].backgroundColor[i];
-                    //                     return {
-                    //                         text: label + ': ' + chart.data.
-                    //                             datasets[0].data[i],
-                    //                         fillStyle: backgroundColor
-                    //                     };
-                    //                 });
-                    //         }
-                    //     },
-                    },
-                    datalabels: {
-                        formatter: (value, context) => {
-                            // let percentage = (value / context.chart._metasets
-                            // [context.datasetIndex].total * 100)
-                            //     .toFixed(2) + '%';
-                            if (value > 0) {
-                                return value
-                            } else {
-                                return ''
-                            }
-                        },
-                        color: '#fff',
-                        font: {
-                            size: 14,
-                        },
-                    }
+    var chartOptions = {
+        title: {
+            display: true,
+            text: '{{ chart_name }}'
+        },
+        legend: {
+            position: 'right', // Change to 'top', 'left', 'right' as needed
+            labels: {
+                generateLabels: function(chart) {
+                    return chart.data.labels.map(function(label, index) {
+                        return {
+                            text: label,
+                            fillStyle: chart.data.datasets[0].backgroundColor[index]
+                        };
+                    });
                 }
-            },
-            plugins: [ChartDataLabels]
-        };
+            }
+        }
+    };
 
-        const pieChart1 = new Chart(
-            document.getElementById('myChart'),
-            config1
-        );
-    function scrollToDiv(id) {
-        var div = document.getElementById(id);
-        div.scrollIntoView();
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: chartData,
+        options: chartOptions
+    });
+    // Function to store the active tab in localStorage
+    function setTab(tabName) {
+        localStorage.setItem('activeTab', tabName);
+        loadActiveTab();
     }
-    function zoomInOut(id) {
-        var div = document.getElementById(id);
-        div.style.transition = "transform 0.3s ease-in-out";
-        div.style.transform = "scale(1.02)";
-        setTimeout(() => {div.style.transform = "scale(1)"}, 300);
+
+    // Function to load the active tab
+    function loadActiveTab() {
+        var activeTab = localStorage.getItem('activeTab') || 'insights'; // Default to 'certificates'
+
+        document.querySelectorAll('.tab').forEach(button => {
+            if (button.getAttribute('onclick').includes(activeTab)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+
+        document.querySelectorAll('.tab-content').forEach(content => {
+            if (content.id === activeTab) {
+                content.style.display = 'block';
+            } else {
+                content.style.display = 'none';
+            }
+        });
     }
+
+    document.addEventListener('DOMContentLoaded', loadActiveTab);
 </script>
 {% endblock %}
