@@ -295,63 +295,6 @@
             evt.currentTarget.className += " active";
         }
 
-        // Toggle My Courses section
-        function toggleMyCourses() {
-        var content = document.getElementById("myCoursesContent");
-        // Ẩn hoặc hiển thị toàn bộ nội dung (bao gồm phân trang)
-        if (content.classList.contains("show")) {
-            content.classList.remove("show");
-        } else {
-            content.classList.add("show");
-        }
-    }
-
-        const itemsPerPage = 3;
-        let currentPage = 1;
-
-        function displayCourses() {
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageItems = courses.slice(startIndex, endIndex);
-
-            const courseContent = document.getElementById("myCoursesContent");
-            courseContent.innerHTML = "";
-
-            pageItems.forEach(course => {
-                const courseElement = document.createElement("div");
-                courseElement.className = "course-container";
-                courseElement.innerHTML = `
-                    <div class="course-info">
-                        <div class="course-icon"></div>
-                        <div class="course-details">
-                            <p class="course-title">${course.title}</p>
-                            <p class="institution">${course.institution}</p>
-                            <p class="grade">Grade Achieved: ${course.grade}</p>
-                        </div>
-                    </div>
-                    <button class="add-linkedin">Add to LinkedIn</button>
-                `;
-                courseContent.appendChild(courseElement);
-            });
-
-            updatePaginationInfo();
-        }
-
-        function updatePaginationInfo() {
-            document.getElementById("currentPage").textContent = currentPage;
-            document.getElementById("totalPages").textContent = Math.ceil(courses.length / itemsPerPage);
-            
-            document.getElementById("prevButton").disabled = (currentPage === 1);
-            document.getElementById("nextButton").disabled = (currentPage === Math.ceil(courses.length / itemsPerPage));
-        }
-
-        function changePage(direction) {
-            currentPage += direction;
-            displayCourses();
-        }
-
-        // Initial display
-        displayCourses();
     </script>
 </body>
 </html>
