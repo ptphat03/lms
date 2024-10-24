@@ -146,17 +146,19 @@
     </div>
     
     <script>
-        // Function to store the active tab
+        // Function to store the active tab in localStorage
         function setTab(tabName) {
             localStorage.setItem('activeTab', tabName);
+            loadActiveTab();
         }
     
         // Function to load the active tab
         function loadActiveTab() {
             var activeTab = localStorage.getItem('activeTab') || 'progress'; // Default to 'progress'
+    
             document.querySelectorAll('.tab').forEach(button => {
                 if (button.getAttribute('onclick').includes(activeTab)) {
-                    button.classList.add('active'); // Set active class
+                    button.classList.add('active');
                 } else {
                     button.classList.remove('active');
                 }
@@ -164,16 +166,21 @@
     
             document.querySelectorAll('.tab-content').forEach(content => {
                 if (content.id === activeTab) {
-                    content.style.display = 'block'; // Show the corresponding tab content
+                    content.style.display = 'block';
                 } else {
                     content.style.display = 'none';
                 }
             });
         }
     
-        // Load the active tab on page load
+        // Reset activeTab on page unload (or close)
+        window.addEventListener('beforeunload', function () {
+            localStorage.removeItem('activeTab'); // Reset to default when leaving the page
+        });
+    
         document.addEventListener('DOMContentLoaded', loadActiveTab);
     </script>
+    
     
 </body>
 {% endblock %}
