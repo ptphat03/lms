@@ -1,6 +1,6 @@
 {% extends 'user_summary.html' %}
 
-{% block title %}User Progress{% endblock %}
+{% block title %}Feedback List{% endblock %}
 
 {% block content %}
 
@@ -72,7 +72,7 @@
     /* New styles for progress bar */
     .progress-container {
         width: 100%;
-        background-color: #e0e0e0;
+        background-color: #4CAF50;
         border-radius: 5px;
         margin: 10px 0;
         height: 25px;
@@ -105,6 +105,12 @@
         background-color: #f2f2f2;
         border-radius: 5px;
         margin-right: 15px;
+    }
+    .course-icon img {
+    max-width: 100%;  /* Giới hạn chiều rộng của ảnh không vượt quá phần tử cha */
+    height: 100%;     /* Chiều cao tự động điều chỉnh theo tỷ lệ */
+    object-fit: fill; /* Đảm bảo ảnh vừa khít với phần tử cha */
+    display: block;   /* Loại bỏ khoảng trống dưới ảnh do inline elements */
     }
     .course-details {
         margin-left: 10px;
@@ -187,11 +193,13 @@
     .toggle-section:hover {
         text-decoration: underline;
     }
+    
 
 </style>
 <body>
     <div class="container">
-        {{block.super}}
+       {{block.super}}
+
         <div id="progress" class="tab-content active">
             <div class="card">
                 <h2>User Progress</h2>
@@ -205,77 +213,97 @@
                 </div>
                 {% else %}
                 <div class="progress-container">
-                    <center style="color: red;">0%</center> <!-- Set the width dynamically -->
+                    <center style="color: red;">0%</center> 
                 </div>
                 {% endif %}
             </div>
 
-            <!-- Toggle for "My Courses" -->
-            <div class="toggle-section" onclick="toggleMyCourses()">My Courses &#9660;</div>
-            
-            <div id="myCoursesContent" class="collapsible-content">
+
+            <div id="myCoursesContent" class="collapsible-content show">
                 {% for course in page_obj_pro %}
                     <div class="course-container">
                         <div class="course-info">
                             <div class="course-icon">
+                                <img src='https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/https://d2j5ihb19pt1hq.cloudfront.net/certificates/cert-course.png?auto=format%2Ccompress&dpr=2&h=72'>
                             </div>
                             <div class="course-details">
-                                <p class="course-title" style="padding-right: 10px;">{{course.course.course_name}}</p>
+                                <p class="course-title" style="padding-right: 10px;">{{course.course.name}}</p>
                                 {% if not course.progress_percentage == 0 %}
                                 <div class="progress-container" style="width: 90vh;">
-                                    <div class="progress-bar" style="width: {{course.progress_percentage}}%"> {{course.progress_percentage}}% </div> 
+                                    <div class="progress-bar" style="width: {{course.progress_percentage}}%"> {{course.progress_percentage}}% </div>
                                 </div>
                                 {% else %}
                                 <div class="progress-container" style="width: 90vh;">
-                                    <!-- <div class="progress-bar" style="width: 100%"> 0% </div>  -->
                                     <center style="color: red;"> 0% </center>
                                 </div>
                                 {% endif %}
                             </div>
-                            
                         </div>
                         <button class="add-linkedin">Add to LinkedIn</button>
-                        
                     </div>
                 {% empty %}
                     <p>No courses found.</p>
                 {% endfor %}
-            </div>
-
-            <div class="pagination">
-                <span class="step-links">
-                    {% if page_obj_pro.has_previous %}
-                        <a href="?page=1">&laquo; First</a>
-                        <a href="?page={{ page_obj_pro.previous_page_number }}">Previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ page_obj_pro.number }} of {{ page_obj_pro.paginator.num_pages }}.
+            
+                <!-- Phần phân trang để di chuyển giữa các trang -->
+                <div class="pagination show">
+                    <span class="step-links">
+                        <!-- Nút "First" và "Previous" -->
+                        {% if page_obj_pro.has_previous %}
+                            <a href="?page=1">&laquo; First</a>
+                            <a href="?page={{ page_obj_pro.previous_page_number }}">Previous</a>
+                        {% else %}
+                            <span class="disabled">&laquo; First</span>
+                            <span class="disabled">Previous</span>
+                        {% endif %}
+                
+                        <!-- Hiển thị số trang hiện tại -->
+                        <span class="current">
+                            Page {{ page_obj_pro.number }} of {{ page_obj_pro.paginator.num_pages }}.
+                        </span>
+                
+                        <!-- Nút "Next" và "Last" -->
+                        {% if page_obj_pro.has_next %}
+                            <a href="?page={{ page_obj_pro.next_page_number }}">Next</a>
+                            <a href="?page={{ page_obj_pro.paginator.num_pages }}">Last &raquo;</a>
+                        {% else %}
+                            <span class="disabled">Next</span>
+                            <span class="disabled">Last &raquo;</span>
+                        {% endif %}
                     </span>
-
-                    {% if page_obj_pro.has_next %}
-                        <a href="?page={{ page_obj_pro.next_page_number }}">Next</a>
-                        <a href="?page={{ page_obj_pro.paginator.num_pages }}">Last &raquo;</a>
-                    {% endif %}
-                </span>
+                </div>
             </div>
+
+            
         </div>
 
-        
-    </div>
 
     <script>
-        function toggleMyCourses() {
-            var content = document.getElementById("myCoursesContent");
-            var pagination = document.querySelector(".pagination");
-            if (content.classList.contains("show")) {
-                content.classList.remove("show");
-                pagination.classList.remove("show");
-            } else {
-                content.classList.add("show");
-                pagination.classList.add("show");
+        // Existing tab switching function
+        function openTab(evt, tabName) {
+            var i, tabContent, tabLinks;
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
             }
+            tabLinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
         }
+
+        // Toggle My Courses section
+        function toggleMyCourses() {
+        var content = document.getElementById("myCoursesContent");
+        // Ẩn hoặc hiển thị toàn bộ nội dung (bao gồm phân trang)
+        if (content.classList.contains("show")) {
+            content.classList.remove("show");
+        } else {
+            content.classList.add("show");
+        }
+    }
 
         const itemsPerPage = 3;
         let currentPage = 1;

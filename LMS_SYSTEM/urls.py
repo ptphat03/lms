@@ -59,17 +59,17 @@ urlpatterns = [
     #group05
     path('activity/', include('activity.urls', namespace='activity')),  # Ensure this line exists
     path('certificate/', include('certificate.urls')),
-    path('ai_insights', include('ai_insights.urls')),
-    path('analytics_report', include('analytics_report.urls')),
-    path('assignment', include('assignment.urls')),
-    path('course_completion', include('course_completion.urls')),
+    path('ai_insights/', include('ai_insights.urls')),
+    path('analytics_report/', include('analytics_report.urls')),
+    path('assignment/', include('assignment.urls')),
+    path('course_completion/', include('course_completion.urls')),
 
-    path('performance_analytics', include('performance_analytics.urls')),
-    path('progress_notification', include('progress_notification.urls')),
-    path('student_performance', include('student_performance.urls')),
-    path('user_progress', include('user_progress.urls')),
-    path('user_summary', include('user_summary.urls')),
-    path('book', include('book.urls')),
+    path('performance_analytics/', include('performance_analytics.urls')),
+    path('progress_notification/', include('progress_notification.urls')),
+    path('student_performance/', include('student_performance.urls')),
+    path('user_progress/', include('user_progress.urls')),
+    path('user_summary/', include('user_summary.urls')),
+    path('book/', include('book.urls')),
 
 
     #group06 - Binh_Thang - Coding
