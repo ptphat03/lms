@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Covert Function{% endblock %}
-{% block content %}
 
+{% block content %}
 <style>
     .custom-button {
         border: 1px solid rgb(53, 37, 142); /* Tạo viền màu đen bao quanh */
@@ -79,13 +78,18 @@
         </div>
     </form>
 </div>
+<div class="d-flex justify-content-end" style="margin-right: 20px;">
+    <a href="{% url 'tools:view_tools' %}" class="btn btn-link">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+</div>
 
 <script>
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
     const fileList = document.getElementById('file-list');
     let filesArray = []; // Mảng để lưu trữ các tệp hiện tại
-
+    const validExtensions = ['.xlsx' ,'.xls']
 // Khi người dùng nhấp vào vùng kéo thả, kích hoạt input để chọn tệp
 dropZone.addEventListener('click', () => {
     fileInput.click();
@@ -118,13 +122,18 @@ fileInput.addEventListener('change', () => {
 
 // Hàm thêm tệp vào mảng và cập nhật danh sách
 function addFilesToArray(newFiles) {
-    for (let i = 0; i < newFiles.length; i++) {
-        if (!filesArray.includes(newFiles[i])) { // Kiểm tra nếu tệp đã tồn tại trong mảng
-            filesArray.push(newFiles[i]); // Thêm tệp mới vào mảng
+        for (let i = 0; i < newFiles.length; i++) {
+            const ext = newFiles[i].name.split('.').pop().toLowerCase(); // Lấy đuôi tệp
+            if (!validExtensions.includes('.' + ext)) { // Kiểm tra định dạng
+                alert(`Tệp '${newFiles[i].name}' không hợp lệ! Vui lòng chọn tệp Excel (.xls, .xlsx).`);
+                continue; // Bỏ qua tệp không hợp lệ
+            }
+            if (!filesArray.some(file => file.name === newFiles[i].name)) { // Kiểm tra trùng tên tệp
+                filesArray.push(newFiles[i]); // Thêm tệp vào mảng
+            }
         }
+        updateFileList();
     }
-    updateFileList(); // Cập nhật danh sách hiển thị
-}
 
 // Hàm cập nhật danh sách các tệp hiển thị trong vùng kéo thả
 function updateFileList() {

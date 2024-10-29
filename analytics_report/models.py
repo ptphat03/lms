@@ -3,6 +3,7 @@ from django.db import models
 from user.models import User
 
 class AnalyticsReport(models.Model):
+    report_id = models.AutoField(primary_key=True)
     report_date = models.DateTimeField(auto_now_add=True)  # Automatically set the current date/time
     report_type = models.CharField(max_length=50)
     report_data = models.JSONField(null=True, blank=True)  # Django has support for JSONField

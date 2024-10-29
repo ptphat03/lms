@@ -1,10 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import AnalyticsReport
-from .forms import AnalyticsReportForm, ExcelImportForm
-import openpyxl
-import pandas as pd
-from django.contrib import messages
-from django.http import HttpResponse
+from .forms import AnalyticsReportForm
 
 # User views
 def analytics_report_list(request):
@@ -42,3 +38,5 @@ def analytics_report_delete(request, pk):
         analytics_report.delete()
         return redirect('analytics_report:analytics_report_list')
     return render(request, 'analytics_report_confirm_delete.html', {'analytics_report': analytics_report})
+
+

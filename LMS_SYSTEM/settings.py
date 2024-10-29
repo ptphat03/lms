@@ -24,14 +24,28 @@ LOGIN_REDIRECT_URL = ''
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+
+# STATIC_URL = '/staticfiles/'
+# STATIC_URL for development
+STATIC_URL = '/static/'
+
+# STATICFILES_DIRS is correct - it tells Django where to look for static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Custom static files directory
+]
+
+
 # settings.py
 AUTH_USER_MODEL = 'user.User'  # Change 'user' to the name of your app
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# settings.py
-
+#Send email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -40,14 +54,13 @@ EMAIL_HOST_USER = 'codinglmsfsa@gmail.com'  # Your email address
 EMAIL_HOST_PASSWORD = 'adst vdek luiv zkny'  # Your email password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Set the default from email
 
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-h+p6t3%50m)_a15%4&i*q_ule5a_$566#wu=f_5uvlapiqq%5v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 #ALLOWED_HOSTS = ['codinglmsfsa.pythonanywhere.com']
 
 AUTHENTICATION_BACKENDS = [
@@ -88,9 +101,12 @@ INSTALLED_APPS = [
     'main', #for hompage
 
     'exercises', #Binh_Thang
+    #ngattt
+    'assessments', 'reports', 'group_enrollment', 'mylearning', 'certification', 
+    'learning_path',
 
-
-    'user', 'role', #group01
+    #group01
+    'user', 'role', 'department', 
 
     #group02
     'course', 'feedback', 'forum', 
@@ -102,12 +118,9 @@ INSTALLED_APPS = [
     'chat', 'chatapp', 'thread', 'collaboration_group', 
 
     #group05 
-    'activity', 'ai_insights', 'analytics_report','assignment', 'certificate', 'course_completion', 
+    'activity', 'ai_insights', 'analytics_report', 'assignment', 'certificate', #'course_completion',  
     'performance_analytics', 'progress_notification', 'student_performance', 
-    'user_progress', 'user_summary', 'book',
-
-    #ngattt
-    'reports', 'assessments', 
+    'user_progress', 'user_summary', 'book'
 ]
 
 MIDDLEWARE = [
@@ -148,12 +161,12 @@ WSGI_APPLICATION = 'LMS_SYSTEM.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # DATABASES = {
 #     'default': {
@@ -165,16 +178,6 @@ WSGI_APPLICATION = 'LMS_SYSTEM.wsgi.application'
 #         'PORT': '5432',       # Default PostgreSQL port
 #     }
 # }
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lms_database',
-        'USER': 'tanphat',
-        'PASSWORD': 'tanphat123',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -206,20 +209,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-# STATIC_URL = '/static/'
-STATIC_URL = '/staticfiles/'
-
-# Define the directory where static files will be collected (if you run `collectstatic`)
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # used for production
-
-# Define additional directories to look for static files
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Custom static files directory
-]
 
 
 # Default primary key field type
